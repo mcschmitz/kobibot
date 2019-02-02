@@ -1,11 +1,10 @@
 import pandas as pd
 import tensorflow as tf
-print(tf.__version__)
 
 
 def get_data():
     # Load the data# Load
-    lines = open('data\prepro_data.csv', encoding='utf-8', errors='ignore').read().split('\n')[1:]
+    lines = open('../Data/kobibot/prepro_data.csv', encoding='utf-8', errors='ignore').read().split('\n')[1:]
 
     # define Q&A pairs
     questions = []
@@ -32,7 +31,7 @@ def get_data():
 
     # Remove questions and answers that are shorter than 2 words and longer than 20 words.
     min_line_length = 2
-    max_line_length = 20
+    max_line_length = 40
 
     # Filter out the questions that are too short/long
     short_questions_temp = []
@@ -122,13 +121,6 @@ def get_data():
     questions_int_to_vocab = {v_i: v for v, v_i in questions_vocab_to_int.items()}
     answers_int_to_vocab = {v_i: v for v, v_i in answers_vocab_to_int.items()}
 
-
-    # Check the length of the dictionaries.# Check
-    print(len(questions_vocab_to_int))
-    print(len(questions_int_to_vocab))
-    print(len(answers_vocab_to_int))
-    print(len(answers_int_to_vocab))
-
     # Add the end of sentence token to the end of every answer.# Add th
     for i in range(len(short_answers)):
         short_answers[i] += ' <EOS>'
@@ -193,13 +185,5 @@ def get_data():
             if len(i[1]) == length:
                 sorted_questions.append(questions_int[i[0]])
                 sorted_answers.append(answers_int[i[0]])
-
-    print(len(sorted_questions))
-    print(len(sorted_answers))
-    print()
-    for i in range(3):
-        print(sorted_questions[i])
-        print(sorted_answers[i])
-        print()
 
     return short_answers, answers_int, answers_int_to_vocab, short_questions, questions_int, questions_int_to_vocab

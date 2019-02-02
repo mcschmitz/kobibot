@@ -37,4 +37,4 @@ for msg in MsgTable['Message']:
 
 MsgTable['Message'] = msgs
 
-MsgTable.to_csv('data/prepro_data.csv', index=False)
+MsgTable.to_csv('../Data/kobibot/prepro_data.csv', index=False)
