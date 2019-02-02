@@ -2,11 +2,12 @@ import re
 import pandas as pd
 import emoji
 
+pd.set_option('display.max_columns', 3)
 
-data_path = 'data/raw_data2.txt'
+data_path = '../Data/kobibot/raw_chat.txt'
 
 with open(data_path, 'r', encoding="utf-8") as f:
-    strings = re.findall('(\d\d.\d\d.\d\d\,\s\d\d\:\d\d)\s+\-\s(\w+\s+\w+\s\w+|\w+\s\w+|\w+)\:(.*)', f.read())
+    strings = re.findall('(\d{2}.\d{2}.\d{2}\,\s\d{2}:\d{2})\s+\-\s(\w+?\s+?\w+?):(.*)', f.read())
 
 # Convert list to a dataframe and name columns
 MsgTable = pd.DataFrame(strings, columns=['DateTime', 'Sender', 'Message'])
