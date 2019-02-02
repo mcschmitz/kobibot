@@ -15,9 +15,6 @@ def get_data():
         questions.append(lines[i])
         answers.append(lines[i+1])
 
-    print(len(questions))
-    print(len(answers))
-
     # Find the length of sentences# Find t
     lengths = []
     for q in questions:
@@ -146,10 +143,6 @@ def get_data():
             else:
                 ints.append(answers_vocab_to_int[word])
         answers_int.append(ints)
-
-    # Check the lengths
-    print(len(questions_int))
-    print(len(answers_int))
 
     # Calculate what percentage of all words have been replaced with <UNK>
     word_count = 0

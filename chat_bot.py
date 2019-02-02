@@ -2,7 +2,7 @@ from get_data import get_data
 from keras.models import Model
 from keras.layers import Input, LSTM, Dense
 import numpy as np
-
+from keras.callbacks import EarlyStopping, ModelCheckpoint
 
 answers, answers_int, answers_int_to_vocab, questions, questions_int, questions_int_to_vocab = get_data()
 
@@ -87,13 +87,12 @@ decoder_outputs = decoder_dense(decoder_outputs)
 model = Model([encoder_inputs, decoder_inputs], decoder_outputs)
 
 # Run training
-model.compile(optimizer='rmsprop', loss='categorical_crossentropy')
-model.fit([encoder_input_data, decoder_input_data], decoder_target_data,
-          batch_size=batch_size,
-          epochs=epochs,
-          validation_split=0.2)
-# Save model
-model.save('s2s.h5')
+model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=["accuracy"])
+
+early_stopper = EarlyStopping(patience=25)
+model_saver = ModelCheckpoint('moodels/firstCB', save_best_only=True)
+model.fit([encoder_input_data, decoder_input_data], decoder_target_data, batch_size=batch_size, epochs=epochs,
+          validation_split=0.2, callbacks=[early_stopper, model_saver])
 
 
 # Next: inference mode (sampling).

@@ -30,4 +30,4 @@ class PlotLearning(Callback):
         ax1.plot(self.x, self.val_losses, label="val_loss")
         ax1.legend()
 
-        plt.show()
+        plt.save(file_path)
