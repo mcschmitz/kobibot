@@ -8,7 +8,6 @@ def preprocess_msg(msg=str):
     msg = msg.replace('ö', 'oe')
     msg = msg.replace('ä', 'ae')
     msg = msg.replace('ß', 'ss')
-    msg = msg.encode('utf8')
     msg = re.sub('\\\\x..', '', str(msg))
     msg = msg.replace('b\' ', '')
     msg = msg.replace('\'', '')
