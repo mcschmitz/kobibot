@@ -1,15 +1,30 @@
-from get_data import get_data
-from keras.models import Model
-from keras.layers import Input, LSTM, Dense
-import numpy as np
-from keras.callbacks import EarlyStopping, ModelCheckpoint
+from preprocess_data import DATA_OUT_PATH as DATA_INPUT_PATH
+from DataLoader import DataLoader
+# from keras.models import Model
+# from keras.layers import Input, LSTM, Dense
+# import numpy as np
+# from keras.callbacks import EarlyStopping, ModelCheckpoint
 
-answers, answers_int, answers_int_to_vocab, questions, questions_int, questions_int_to_vocab = get_data()
+# PARAMETERS
+MIN_SEQ_LEN = 1
+MAX_SEQ_LEN = 120
+BATCH_SIZE = 256
+EPOCHS = 100
+LATENT_DIM = 256
 
-batch_size = 64  # Batch size for training.
-epochs = 100  # Number of epochs to train for.
-latent_dim = 256  # Latent dimensionality of the encoding space.
-num_samples = int(len(answers) * 0.75)
+loader = DataLoader(DATA_INPUT_PATH)
+loader.filter_sequences(min_sequence_length=MIN_SEQ_LEN, max_sequence_length=MAX_SEQ_LEN)
+loader.create_vocab(loader.short_questions, loader.short_answers)
+loader.vocab_to_int(answers=loader.short_answers)
+loader.txt2int(loader.short_questions, loader.short_answers)
+
+questions = loader.questions
+answers = loader.answers
+answers_int = loader.answers_int
+answers_int_to_vocab = loader.answers_int_to_vocab
+questions_int = loader.questions_int
+questions_int_to_vocab = loader.questions_int_to_vocab
+
 
 # Vectorize the data.
 input_texts = []
@@ -67,7 +82,7 @@ for i, (input_text, target_text) in enumerate(zip(input_texts, target_texts)):
 
 # Define an input sequence and process it.
 encoder_inputs = Input(shape=(None, num_encoder_tokens))
-encoder = LSTM(latent_dim, return_state=True)
+encoder = LSTM(LATENT_DIM, return_state=True)
 encoder_outputs, state_h, state_c = encoder(encoder_inputs)
 # We discard `encoder_outputs` and only keep the states.
 encoder_states = [state_h, state_c]
@@ -77,7 +92,7 @@ decoder_inputs = Input(shape=(None, num_decoder_tokens))
 # We set up our decoder to return full output sequences,
 # and to return internal states as well. We don't use the
 # return states in the training model, but we will use them in inference.
-decoder_lstm = LSTM(latent_dim, return_sequences=True, return_state=True)
+decoder_lstm = LSTM(LATENT_DIM, return_sequences=True, return_state=True)
 decoder_outputs, _, _ = decoder_lstm(decoder_inputs, initial_state=encoder_states)
 decoder_dense = Dense(num_decoder_tokens, activation='softmax')
 decoder_outputs = decoder_dense(decoder_outputs)
@@ -90,8 +105,8 @@ model = Model([encoder_inputs, decoder_inputs], decoder_outputs)
 model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=["accuracy"])
 
 early_stopper = EarlyStopping(patience=25)
-model_saver = ModelCheckpoint('moodels/firstCB', save_best_only=True)
-model.fit([encoder_input_data, decoder_input_data], decoder_target_data, batch_size=batch_size, epochs=epochs,
+model_saver = ModelCheckpoint('models/firstCB.h5', save_best_only=True)
+model.fit([encoder_input_data, decoder_input_data], decoder_target_data, batch_size=BATCH_SIZE, epochs=EPOCHS,
           validation_split=0.2, callbacks=[early_stopper, model_saver])
 
 
@@ -106,8 +121,8 @@ model.fit([encoder_input_data, decoder_input_data], decoder_target_data, batch_s
 # Define sampling models
 encoder_model = Model(encoder_inputs, encoder_states)
 
-decoder_state_input_h = Input(shape=(latent_dim,))
-decoder_state_input_c = Input(shape=(latent_dim,))
+decoder_state_input_h = Input(shape=(LATENT_DIM,))
+decoder_state_input_c = Input(shape=(LATENT_DIM,))
 decoder_states_inputs = [decoder_state_input_h, decoder_state_input_c]
 decoder_outputs, state_h, state_c = decoder_lstm(
     decoder_inputs, initial_state=decoder_states_inputs)
