@@ -1,5 +1,5 @@
 from preprocess_data import DATA_OUT_PATH as DATA_INPUT_PATH
-from DataLoader import DataLoader
+from DataLoader import CharacterEmbedder
 # from keras.models import Model
 # from keras.layers import Input, LSTM, Dense
 # import numpy as np
@@ -12,21 +12,21 @@ BATCH_SIZE = 256
 EPOCHS = 100
 LATENT_DIM = 256
 
-loader = DataLoader(DATA_INPUT_PATH)
+loader = CharacterEmbedder(DATA_INPUT_PATH)
 loader.filter_sequences(min_sequence_length=MIN_SEQ_LEN, max_sequence_length=MAX_SEQ_LEN)
-loader.create_vocab(loader.short_questions, loader.short_answers)
-loader.vocab_to_int(answers=loader.short_answers)
+loader.create_char_dictionary(loader.short_questions, loader.short_answers)
+escape_dict = {"eos": "$", 'unk': "§"}
+loader.char_dictionary_to_int(answers=loader.short_answers, escape_codes=escape_dict)
 loader.txt2int(loader.short_questions, loader.short_answers)
 
 questions = loader.questions
 answers = loader.answers
 answers_int = loader.answers_int
-answers_int_to_vocab = loader.answers_int_to_vocab
+answers_int_to_vocab = loader.answers_int_to_wd
 questions_int = loader.questions_int
-questions_int_to_vocab = loader.questions_int_to_vocab
+questions_int_to_vocab = loader.questions_int_to_wd
 
 
-# Vectorize the data.
 input_texts = []
 target_texts = []
 input_characters = set()
