@@ -8,12 +8,11 @@ def preprocess_msg(msg=str):
     msg = msg.replace('ö', 'oe')
     msg = msg.replace('ä', 'ae')
     msg = msg.replace('ß', 'ss')
-    msg = re.sub('\\\\x..', '', str(msg))
+    msg = re.sub('\\x00', '', str(msg))
     msg = msg.replace('b\' ', '')
     msg = msg.replace('\'', '')
-    msg = re.sub(r"[-()\"#/@;:<>{}`+=~|.!?,]", "", msg)
-    msg = (msg.lstrip().rstrip())
-    msg = msg.lower()
+    msg = msg.strip()
+    msg = msg.encode('ascii', 'ignore').decode("utf-8")
     return msg
 
 
