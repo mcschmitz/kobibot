@@ -1,6 +1,7 @@
 import re
 import pandas as pd
 import emoji
+from tqdm import tqdm
 
 
 def preprocess_msg(msg=str):
@@ -18,7 +19,7 @@ def preprocess_msg(msg=str):
 
 # PARAMETERS
 DATA_PATH = '../Data/kobibot/raw_chat.txt'
-DATA_OUT_PATH = '../Data/kobibot/prepro_data.csv'
+DATA_OUT_PATH = '../Data/kobibot/prepro_data.txt'
 
 if __name__ == "__main__":
     with open(DATA_PATH, 'r', encoding="utf-8") as f:
@@ -53,8 +54,10 @@ if __name__ == "__main__":
     MsgTable = MsgTable[[msg != '' for msg in MsgTable['Message']]]
 
     msgs = []
-    for msg in MsgTable['Message']:
-        msgs.append(preprocess_msg(msg))
-    MsgTable['Message'] = msgs
-    MsgTable = MsgTable["Message"]
-    MsgTable.to_csv(DATA_OUT_PATH, index=False)
+    for msg in tqdm(MsgTable['Message']):
+        preprocessed_msg = preprocess_msg(msg)
+        if len(preprocessed_msg) > 0:
+            msgs.append(preprocessed_msg)
+    with open(DATA_OUT_PATH, 'w') as f:
+        for msg in msgs:
+            f.write("%s\n" % msg)
