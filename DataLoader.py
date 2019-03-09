@@ -33,8 +33,8 @@ class DataLoader:
         self.short_questions = []
         self.short_answers = []
         for question, answer in zip(self.questions, self.answers):
-            question_in_range = min_sequence_length <= len(question.split()) <= max_sequence_length
-            answer_in_range = min_sequence_length <= len(answer.split()) <= max_sequence_length
+            question_in_range = min_sequence_length <= len(question) <= max_sequence_length
+            answer_in_range = min_sequence_length <= len(answer) <= max_sequence_length
             if question_in_range and answer_in_range:
                 self.short_questions.append(question)
                 self.short_answers.append(answer)
