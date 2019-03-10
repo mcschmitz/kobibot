@@ -145,13 +145,15 @@ class CharacterEmbedder(DataLoader):
                 else:
                     self.char_dictionary[char] += 1
 
-    def char_dictionary_to_int(self, answers, escape_codes=dict()):
+    def char_dictionary_to_int(self, answers, questions, escape_codes=dict()):
         self.questions_cd_to_int = {}
         self.answers_cd_to_int = {}
         self.escape_codes = escape_codes
 
         if answers is None:
             answers = self.answers
+        if questions is None:
+            questions = self.questions
 
         char_num = 0
         for word, count in self.char_dictionary.items():
@@ -172,6 +174,9 @@ class CharacterEmbedder(DataLoader):
 
         for i in range(len(answers)):
             answers[i] += escape_codes["eos"]
+
+        for i in range(len(questions)):
+            questions[i] += escape_codes["eos"]
 
     def txt2int(self, questions, answers):
         if questions is None:
