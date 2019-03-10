@@ -48,4 +48,4 @@ model = character_based_lstm(timesteps=MAX_SEQ_LEN + 1, num_encoder_tokens=len(q
                              num_decoder_tokens=len(answers_int_to_vocab))
 model.compile(optimizer=Adam(.0005), loss='categorical_crossentropy', metrics=["accuracy"])
 model.fit(encoder_input_data, decoder_target_data, batch_size=BATCH_SIZE, epochs=EPOCHS,
-          validation_split=0.25, callbacks=[early_stopper, model_saver], verbose=2)
+          validation_split=0.25, callbacks=[early_stopper, model_saver], verbose=1)
