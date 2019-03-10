@@ -1,0 +1,7 @@
+# Created by .ignore support plugin (hsz.mobi)
+.idea/
+CharacterBasedChatBot/__pycache__/
+CharacterBasedChatBot/predict.py
+__pycache__/
+models/
+venv/
