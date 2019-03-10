@@ -43,7 +43,7 @@ for idx, answer_int in enumerate(answers_int):
 
 early_stopper = EarlyStopping(patience=100)
 model_saver = ModelCheckpoint(MODEL_PATH, save_best_only=True)
-progress_plotter = PlotLearning(PROGRESS_PATH)
+progress_plotter = PlotLearning(file_path=PROGRESS_PATH)
 model = character_based_lstm(timesteps=MAX_SEQ_LEN + 1, num_encoder_tokens=len(questions_int_to_vocab),
                              num_decoder_tokens=len(answers_int_to_vocab))
 model.compile(optimizer=Adam(.0005), loss='categorical_crossentropy', metrics=["accuracy"])

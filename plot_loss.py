@@ -1,9 +1,13 @@
-from matplotlib import pyplot as plt
 from IPython.display import clear_output
 from keras.callbacks import Callback
+from matplotlib import pyplot as plt
 
 
 class PlotLearning(Callback):
+    def __init__(self, file_path):
+        super(PlotLearning).__init__()
+        self.file_path = file_path
+
     def on_train_begin(self, logs={}):
         self.i = 0
         self.x = []
@@ -12,7 +16,6 @@ class PlotLearning(Callback):
         self.acc = []
         self.val_acc = []
         self.fig = plt.figure()
-
         self.logs = []
 
     def on_epoch_end(self, epoch, logs={}):
@@ -30,4 +33,4 @@ class PlotLearning(Callback):
         ax1.plot(self.x, self.val_losses, label="val_loss")
         ax1.legend()
 
-        plt.save(file_path)
+        plt.save(self.file_path)
