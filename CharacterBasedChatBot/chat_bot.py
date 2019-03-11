@@ -10,7 +10,7 @@ from preprocess_data import DATA_OUT_PATH as DATA_INPUT_PATH
 # PARAMETERS
 MIN_SEQ_LEN = 1
 MAX_SEQ_LEN = 120
-BATCH_SIZE = 64
+BATCH_SIZE = 128
 EPOCHS = 1000
 LATENT_DIM = 256
 MODEL_PATH = 'models/CharacterBasedChatBot.h5'
@@ -43,9 +43,9 @@ for idx, answer_int in enumerate(answers_int):
 
 early_stopper = EarlyStopping(patience=100)
 model_saver = ModelCheckpoint(MODEL_PATH, save_best_only=True)
-progress_plotter = PlotLearning(file_path=PROGRESS_PATH)
+progress_plotter = PlotLearning(path=PROGRESS_PATH)
 model = character_based_lstm(timesteps=MAX_SEQ_LEN + 1, num_encoder_tokens=len(questions_int_to_vocab),
                              num_decoder_tokens=len(answers_int_to_vocab))
 model.compile(optimizer=Adam(.0005), loss='categorical_crossentropy', metrics=["accuracy"])
 model.fit(encoder_input_data, decoder_target_data, batch_size=BATCH_SIZE, epochs=EPOCHS,
-          validation_split=0.25, callbacks=[early_stopper, model_saver], verbose=1)
+          validation_split=0.25, callbacks=[early_stopper, model_saver, progress_plotter], verbose=1)
