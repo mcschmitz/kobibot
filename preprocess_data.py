@@ -6,9 +6,6 @@ import pandas as pd
 from tqdm import tqdm
 
 
-#  TODO Refactor
-
-
 def standardize_str(s: str):
     """
     Standardizes a string by replacing umlauts and escape characters
@@ -31,10 +28,78 @@ def standardize_str(s: str):
     return s
 
 
+def get_responder(senders: list):
+    """
+    Extract the responder out of a list of senders.
+
+    Takes a list of senders and creates a list of responders of equal length. If the next message is from the current
+    sender itself the value in the list is none
+
+    Args:
+        senders: list of senders
+
+    Returns:
+        list o responders
+    """
+    response_from = np.repeat(None, len(senders))
+    idx = 0
+    possible_responders = {}
+    unique_senders = list(set(senders))
+    while senders:
+        sender = senders.pop(0)
+        if sender not in possible_responders.keys():
+            possible_responders[sender] = [cs for cs in unique_senders if cs != sender]
+        for r in senders:
+            if r in possible_responders[sender]:
+                response_from[idx] = r
+                if response_from[idx] == response_from[idx - 1]:
+                    response_from[idx - 1] = None
+                break
+        idx += 1
+    return response_from
+
+
+def get_questioner(senders: list):
+    """
+    Extract the questionner out of a list of senders.
+
+    Takes a list of senders and creates a list of questioners of equal length. If the previous message is from the
+    current sender itself the value in the list is none
+
+    Args:
+        senders: list of senders
+
+    Returns:
+        list of questioners
+    """
+    response_to = np.repeat(None, len(senders))
+    idx = len(msg_table) - 1
+    possible_questioners = {}
+    unique_senders = list(set(responder))
+    while senders:
+        sender = senders.pop(0)
+        if sender not in possible_questioners.keys():
+            possible_questioners[sender] = [cs for cs in unique_senders if cs != sender]
+        for q in senders:
+            if q in possible_questioners[sender]:
+                response_to[idx] = q
+                break
+        idx -= 1
+    current_responder = None
+    for idx, rt in enumerate(response_to):
+        if idx < len(response_to):
+            if rt == current_responder:
+                response_to[idx] = None
+            else:
+                current_responder = rt
+    return response_to
+
+
 # PARAMETERS
 DATA_PATH = "data/raw_chat.txt"
-DATA_OUT_PATH = "data/prepro_data.txt"
 MSG_TABLE_OUT_PATH = "data/msg_table.csv"
+DATA_OUT_PATH = "data/prepro_data.txt"
+
 
 if __name__ == "__main__":
     # Load lines from text file
@@ -65,47 +130,18 @@ if __name__ == "__main__":
     msg_table = msg_table[msg_table["Sender"].isin(common_senders)]
 
     # Remove media excluded system message
-    msg_table = msg_table[['<Medien weggelassen>' not in msg for msg in msg_table['Message']]].reset_index(drop=True)
+    msg_table = msg_table[['<Medien ausgeschlossen>' not in msg for msg in msg_table['Message']]].reset_index(drop=True)
     msg_table["nWords"] = [len(m.split()) for m in msg_table["Message"]]
     msg_table["nLetters"] = [len(m) for m in msg_table["Message"]]
 
-    response_from = np.repeat(None, len(msg_table))
     responder = msg_table["Sender"].values.tolist()
-    possible_responders = {}
-    idx = 0
-    while responder:
-        sender = responder.pop(0)
-        if sender not in possible_responders.keys():
-            possible_responders[sender] = [cs for cs in common_senders.values if cs != sender]
-        for r in responder:
-            if r in possible_responders[sender]:
-                response_from[idx] = r
-                if response_from[idx] == response_from[idx - 1]:
-                    response_from[idx - 1] = None
-                break
-        idx += 1
+    response_from = get_responder(responder)
     msg_table["ResponseFrom"] = response_from
 
-    response_to = np.repeat(None, len(msg_table))
     questioner = list(reversed(msg_table["Sender"].values.tolist()))
-    possible_questioners = possible_responders
-    idx = len(msg_table) - 1
-    while questioner:
-        sender = questioner.pop(0)
-        for q in questioner:
-            if q in possible_responders[sender]:
-                response_to[idx] = q
-                break
-        idx -= 1
-    current_responder = None
-    for idx, rt in enumerate(response_to):
-        if idx < len(response_to):
-            if rt == current_responder:
-                response_to[idx] = None
-            else:
-                current_responder = rt
+    response_to = get_questioner(questioner)
     msg_table["ResponseTo"] = response_to
-    msg_table.to_csv(MSG_TABLE_OUT_PATH, index=False)
+    msg_table.to_csv(MSG_TABLE_OUT_PATH, index=False, encoding="utf-8")
 
     # delete Emojis
     msg_table['Message'] = [emoji.demojize(m) for m in msg_table["Message"]]
