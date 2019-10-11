@@ -198,5 +198,7 @@ fabric.properties
 # Data
 data
 
-# Presentation
+# Presentation and plots
 Friendship 4.0.odp
+chat_analysis/plots
+!chat_analysis/plots/mgs_time_date.png
