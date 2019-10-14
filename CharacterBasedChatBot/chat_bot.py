@@ -2,9 +2,9 @@ import numpy as np
 from keras.callbacks import EarlyStopping, ModelCheckpoint
 from keras.optimizers import Adam
 
+from CharacterBasedChatBot.DataLoader import CharacterEmbedder
 from CharacterBasedChatBot.network_definition import character_based_lstm
-from DataLoader import CharacterEmbedder
-from plot_loss import PlotLearning
+from CharacterBasedChatBot.plot_loss import PlotLearning
 from preprocess_data import DATA_OUT_PATH as DATA_INPUT_PATH
 
 # PARAMETERS

@@ -1,7 +1,7 @@
 from keras import Sequential
 from keras.layers import *
 
-from Attention import AttentionDecoder
+from CharacterBasedChatBot.Attention import AttentionDecoder
 
 
 def character_based_lstm(timesteps, num_encoder_tokens, num_decoder_tokens):

@@ -8,7 +8,7 @@ sns.set_style("whitegrid")
 plt.ioff()
 
 
-def plot_msg_overview(data, path):
+def plot_msg_overview(data, path: str):
     """
     Plots a joint consisting of a scatter plot displaying date and time when a message was sent and the marginal
     histograms of the date and time variable to get insights of date based and daytime based activities
@@ -25,7 +25,7 @@ def plot_msg_overview(data, path):
     g = sns.JointGrid(x="Date", y="Time", data=data)
     g.fig.set_figwidth(8)
     g.fig.set_figheight(4)
-    g = g.plot_joint(plt.scatter, color="black", alpha=.75, linewidth=0.1)
+    g = g.plot_joint(plt.scatter, color="black", alpha=.75, linewidth=0.1, s=1.5)
     g.ax_joint.set_yticklabels(np.arange(0, 24, 4))
     g.ax_joint.set_ylabel("Time")
     g.ax_marg_x.hist(data["Date"],

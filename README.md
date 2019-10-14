@@ -2,11 +2,11 @@
 
 **Analysis of WhatsApp data.**
 
-For over 7 years I have been in a WhatsApp Group chat with few of the
-funniest and lovely lunatics which I like to refer to as my friend from
-school. After switching to Threema for obvious reasons I asked oen of
-them to pass me a dump of 7 years of the group chat to see if I could
-find insights from the data.
+For over 6 years I have been in a WhatsApp Group chat with few of the
+funniest and lovely lunatics which I like to refer to as my friends from
+school. After switching to Threema for obvious reasons I asked one of
+them to pass me a dump of the group chat to see if I could find insights
+from the data.
 
 This project is still ongoing. For now three main parts are planned: 
 1. Meta-Data Analysis
@@ -15,13 +15,12 @@ This project is still ongoing. For now three main parts are planned:
    (Heaven forbid!)
  
 ### Preprocessing
-First step - as in every data science project is data
-cleansing and preprocessin. This is done in
-[this script](preprocess_data.py). It requires the data to be in text
-format where each line is one message with timestamp and sender name.
-Depending on the language settings of your phone the data has a
-different format. In my case the dump came from a german phone.
-Therefore, the data had the following format:
+First step - as in every data science project is data cleansing and
+preprocessing. This is done in [this script](preprocess_data.py). It
+requires the data to be in text format where each line is one message
+with timestamp and sender name. Depending on the language settings of
+your phone the data has a different format. In my case the dump came
+from a german phone. Therefore, the data had the following format:
 ```text
 dd.mm.yy, HH:MM - <sender name>: <message>
 ```
@@ -45,4 +44,12 @@ Obviously, our friendship did not get weaker over time since the average
 amount of sent messages remain more or less the same. However, there
 seems to be a yearly trend with peaks in summer and drops during the
 fourth quarter of the year. Could be due to the general fatigue after
-the Octoberfest...
+the Octoberfest... Also you can see the drop in the monthly amount of
+message when we decided to switch to Threema by the beginning onf 2019.
+
+If we take a look at the yearly aggregated traffic per day - determined
+by the average amount of messages per day and the average amount of
+words per message there seems to be a trend towards less but longer
+messages.
+
+![alt text](chat_analysis/plots/msg_length_year.png) 
