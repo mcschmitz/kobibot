@@ -200,6 +200,6 @@ data
 
 # Presentation and plots
 Friendship 4.0.odp
-chat_analysis/plots
+chat_analysis/plots/*
 !chat_analysis/plots/mgs_time_date.png
-!/chat_analysis/plots/msg_length_year.png
+!chat_analysis/plots/msg_length_year.png
