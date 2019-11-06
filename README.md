@@ -34,22 +34,23 @@ the chatbot training.
 
 ### Meta-Data Analysis
 The descriptive analysis is mostly done in
-[this script](chat_analysis/descriptive_analysis.py). The first plot of
-the meta data analysis displays nothing more than the date and time when
-a message was sent.
+[this script](metadata_analysis/descriptive_analysis.py). The first plot
+of the meta data analysis displays nothing more than the date and time
+when a message was sent.
  
-![alt text](chat_analysis/plots/mgs_time_date.png) 
+![alt text](metadata_analysis/plots/mgs_time_date.png) 
 
 Obviously, our friendship did not get weaker over time since the average
 amount of sent messages remain more or less the same. However, there
 seems to be a yearly trend with peaks in summer and drops during the
 fourth quarter of the year. Could be due to the general fatigue after
 the Octoberfest... Also you can see the drop in the monthly amount of
-message when we decided to switch to Threema by the beginning onf 2019.
+message when we decided to switch to Threema by the beginning of 2019.
 
 If we take a look at the yearly aggregated traffic per day - determined
 by the average amount of messages per day and the average amount of
-words per message there seems to be a trend towards less but longer
-messages.
+words per message (whereas emojis are counted as one letter) there seems
+to be a trend towards less but longer messages, although 2018 was a
+pretty average year.
 
-![alt text](chat_analysis/plots/msg_length_year.png) 
+![alt text](metadata_analysis/plots/msg_length_year.png) 
