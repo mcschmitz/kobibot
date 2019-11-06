@@ -15,12 +15,13 @@ This project is still ongoing. For now three main parts are planned:
    (Heaven forbid!)
  
 ### Preprocessing
-First step - as in every data science project is data cleansing and
-preprocessing. This is done in [this script](preprocess_data.py). It
-requires the data to be in text format where each line is one message
-with timestamp and sender name. Depending on the language settings of
-your phone the data has a different format. In my case the dump came
-from a german phone. Therefore, the data had the following format:
+First step - as in every data science project - is data cleansing and
+preprocessing. This is done by the scripts in
+[this directory](metadata_analysis). It requires the data to be in text
+format where each line is one message with timestamp and sender name.
+Depending on the language settings of your phone the data has a
+different format. In my case the dump came from a german phone.
+Therefore, the data had the following format:
 ```text
 dd.mm.yy, HH:MM - <sender name>: <message>
 ```
@@ -54,3 +55,18 @@ to be a trend towards less but longer messages, although 2018 was a
 pretty average year.
 
 ![alt text](metadata_analysis/plots/msg_length_year.png) 
+
+The following flowchart depicts the message flow from each member of the
+group to each other member whereby, the size of the nodes show the
+absolute number of messages written and the width of the edges display
+the number of messages written to this specific member. If the color of
+the node is the same as the color of the edge this means that the
+message was sent by this node. 
+
+![alt text](metadata_analysis/plots/msg_flow.png) 
+
+It can be seen that few members of the group send a large amount of
+messages and that they seem to communicate between each other (e.g.
+*MSt*) whereas, the remaining members do not communicate that much but
+if they do, their communication seems so be much more balanced towards
+each member than the *high traffic* members (e.g. *FA*).

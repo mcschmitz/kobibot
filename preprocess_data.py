@@ -29,8 +29,7 @@ def standardize_str(s: str):
 
 
 def get_responder(senders: list):
-    """
-    Extract the responder out of a list of senders.
+    """Extracts the first responder out of a list of senders.
 
     Takes a list of senders and creates a list of responders of equal length. If the next message is from the current
     sender itself the value in the list is none
@@ -60,8 +59,7 @@ def get_responder(senders: list):
 
 
 def get_questioner(senders: list):
-    """
-    Extract the questionner out of a list of senders.
+    """Extracts the questioner out of a list of senders.
 
     Takes a list of senders and creates a list of questioners of equal length. If the previous message is from the
     current sender itself the value in the list is none
@@ -75,7 +73,7 @@ def get_questioner(senders: list):
     response_to = np.repeat(None, len(senders))
     idx = len(msg_table) - 1
     possible_questioners = {}
-    unique_senders = list(set(responder))
+    unique_senders = list(set(senders))
     while senders:
         sender = senders.pop(0)
         if sender not in possible_questioners.keys():
@@ -125,7 +123,6 @@ if __name__ == "__main__":
     # Convert list to a dataframe and name columns
     msg_table = pd.DataFrame({'Time': dates, 'Sender': senders, 'Message': msgs})
     # Remove uncommon senders to ger rid of system messages
-    print(msg_table["Sender"].value_counts())
     common_senders = msg_table["Sender"].value_counts().index[msg_table["Sender"].value_counts() > 10]
     msg_table = msg_table[msg_table["Sender"].isin(common_senders)]
 
