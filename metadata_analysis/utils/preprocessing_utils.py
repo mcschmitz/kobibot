@@ -1,4 +1,6 @@
+import igraph as ig
 import networkx as nx
+import numpy as np
 import pandas as pd
 
 
@@ -21,7 +23,7 @@ def split_datetime(data, column_name: str = "Time", format: str = "%d.%m.%y, %H:
     return data
 
 
-def build_graph(data, node_col: str, to_col: str):
+def build_graph(data, node_col: str, to_col: str, scale_edge_weights: bool = False, output_format: str = "networkx"):
     """Builds a graph that represents a flow of messages
 
     The resulting graph has nodes represented by the `node_col` with an attribute msg_freq, that represents the
@@ -30,21 +32,42 @@ def build_graph(data, node_col: str, to_col: str):
 
     Args:
         data: dataset containing the `node_col` and the `to_col`
+        node_col: column name of the column determining the sender of the message
         to_col: column name of the column determining the receiver of the specific message
+        scale_edge_weights: whether to scale the weights of the edges in the graph
+        output_format: build `networkx` or `igraph` graph
 
     Returns:
         networkx graph
     """
-    graph = nx.classes.digraph.DiGraph()
+    if output_format not in ["networkx", "igraph"]:
+        raise ValueError("output_format has to be either networkx or igraph")
 
     sender_freq = data[node_col].value_counts()
     sender_freq /= max(sender_freq)
     nodes = sender_freq.to_dict()
-    for n in nodes:
-        graph.add_node(n, msg_freq=nodes[n], sender=n)
 
     data_from = data.groupby([node_col, to_col]).size().reset_index()
+    if scale_edge_weights:
+        _, counts = np.unique(data_from[node_col], return_counts=True)
+        values = np.repeat(data_from.groupby([node_col]).sum().values, counts.tolist())
+        data_from[0] /= values
     data_from = data_from.values
-    for i in data_from:
-        graph.add_edge(i[0], i[1], weight=i[2], sender=i[0])
+
+    if output_format == "networkx":
+        graph = nx.classes.digraph.DiGraph()
+        for n in nodes:
+            graph.add_node(n, msg_freq=nodes[n], sender=n)
+
+        for i in data_from:
+            graph.add_edge(i[0], i[1], weight=i[2], sender=i[0])
+
+    elif output_format == "igraph":
+        graph = ig.Graph(directed=True)
+        for n in nodes:
+            graph.add_vertex(n, msg_freq=nodes[n], sender=n)
+
+        for i in data_from:
+            graph.add_edge(i[0], i[1], weight=i[2], sender=i[0])
+
     return graph

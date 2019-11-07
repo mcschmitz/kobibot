@@ -204,3 +204,4 @@ metadata_analysis/plots/*
 !metadata_analysis/plots/mgs_time_date.png
 !metadata_analysis/plots/msg_length_year.png
 !metadata_analysis/plots/msg_flow.png
+!/metadata_analysis/plots/msg_flow_communities.png

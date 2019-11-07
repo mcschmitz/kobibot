@@ -34,10 +34,10 @@ messages without timestamp or sender information as a corpus used for
 the chatbot training.
 
 ### Meta-Data Analysis
-The descriptive analysis is mostly done in
-[this script](metadata_analysis/descriptive_analysis.py). The first plot
-of the meta data analysis displays nothing more than the date and time
-when a message was sent.
+The descriptive analysis is mostly done by the scripts in
+[this directory](metadata_analysis). The first plot of the meta data
+analysis displays nothing more than the date and time when a message was
+sent.
  
 ![alt text](metadata_analysis/plots/mgs_time_date.png) 
 
@@ -70,3 +70,18 @@ messages and that they seem to communicate between each other (e.g.
 *MSt*) whereas, the remaining members do not communicate that much but
 if they do, their communication seems so be much more balanced towards
 each member than the *high traffic* members (e.g. *FA*).
+
+If we apply the Leiden implementation of the community clustering
+approach described by Leicht and Newman in
+[this paper](https://arxiv.org/pdf/0709.4500.pdf) with a resolution
+parameter of 1.1 and plot the graph with the edges scaled by the amount
+of messages send by each sender node the following communities arise
+
+![alt text](metadata_analysis/plots/msg_flow_communities.png) 
+
+Obviously the graph is not that easy to cluster, since there is high
+traffic between each sender, but especially the green, grey and red
+cluster seem reasonable. Naturally in such a large group of friends sub
+cliques develop over time. Compared to these sub cliques determined by 
+residence or interests in music and sports the clustering seems to
+make sense and separate the group into the right cliques.
