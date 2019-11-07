@@ -1,4 +1,3 @@
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from cdlib import algorithms
@@ -6,8 +5,6 @@ from nxviz.plots import CircosPlot
 
 from metadata_analysis.utils import build_graph
 from preprocess_data import MSG_TABLE_OUT_PATH
-
-plt.ion()
 
 data = pd.read_csv(MSG_TABLE_OUT_PATH, encoding="utf-8")
 
@@ -23,7 +20,6 @@ c.figure.savefig("metadata_analysis/plots/msg_flow.png")
 
 graph_i = build_graph(data, node_col="Sender", to_col="ResponseFrom", output_format="igraph", scale_edge_weights=True)
 communities = algorithms.rb_pots(graph_i, weights="weight", resolution_parameter=1.1)
-print(communities.communities)
 
 graph_nx = build_graph(data, node_col="Sender", to_col="ResponseFrom", output_format="networkx",
                        scale_edge_weights=True)
