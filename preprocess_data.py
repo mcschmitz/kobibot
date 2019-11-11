@@ -3,12 +3,15 @@ import re
 import emoji
 import numpy as np
 import pandas as pd
+import unicodedata
 from tqdm import tqdm
 
 
 def standardize_str(s: str):
-    """
-    Standardizes a string by replacing umlauts and escape characters
+    """Standardizes a Whatsapp message string
+
+    Standardizes the string by replacing escape characters and decode emojis to their corresponding aliases. Also
+    removes unknown unicode characters.
 
     Args:
         s: the input string
@@ -16,15 +19,16 @@ def standardize_str(s: str):
     Returns:
         The standardized string
     """
-    s = s.replace('ü', 'ue')
-    s = s.replace('ö', 'oe')
-    s = s.replace('ä', 'ae')
-    s = s.replace('ß', 'ss')
-    s = re.sub('\\x00', '', str(s))
-    s = s.replace('b\' ', '')
-    s = s.replace('\'', '')
+    s = "".join([s_i for s_i in s if unicodedata.category(s_i) != "Co"])
     s = s.strip()
-    s = s.encode('ascii', 'ignore').decode("utf-8")
+    s = re.sub("\x00", "", s)
+    if len(s) > 0:
+        s = "".join([s_i for s_i in s if "MODIFIER FITZPATRICK" not in unicodedata.name(s_i)])
+    s = s.strip()
+    s = unicodedata.normalize("NFD", s)
+    s = emoji.demojize(s)
+    s = re.sub(r"(:[\w-]*:)", r" \1 ", s)
+    s = " ".join(s.split())
     return s
 
 
@@ -101,7 +105,7 @@ DATA_OUT_PATH = "data/prepro_data.txt"
 
 if __name__ == "__main__":
     # Load lines from text file
-    with open(DATA_PATH, 'r', encoding="utf-8") as f:
+    with open(DATA_PATH, 'r', encoding="utf-8", errors="ignore") as f:
         string = f.read()
     strings = string.split('\n')
 
@@ -126,8 +130,19 @@ if __name__ == "__main__":
     common_senders = msg_table["Sender"].value_counts().index[msg_table["Sender"].value_counts() > 10]
     msg_table = msg_table[msg_table["Sender"].isin(common_senders)]
 
-    # Remove media excluded system message
+    # Remove 'media excluded' system message
     msg_table = msg_table[['<Medien ausgeschlossen>' not in msg for msg in msg_table['Message']]].reset_index(drop=True)
+    msgs = []
+    for msg in tqdm(msg_table['Message']):
+        msgs.append(standardize_str(msg))
+
+    with open(DATA_OUT_PATH, 'w', encoding="utf-8") as f:
+        for msg in msgs:
+            if len(msg) > 0:
+                f.write("%s\n" % msg)
+
+    msg_table["Message"] = msgs
+
     msg_table["nWords"] = [len(m.split()) for m in msg_table["Message"]]
     msg_table["nLetters"] = [len(m) for m in msg_table["Message"]]
 
@@ -139,17 +154,3 @@ if __name__ == "__main__":
     response_to = get_questioner(questioner)
     msg_table["ResponseTo"] = response_to
     msg_table.to_csv(MSG_TABLE_OUT_PATH, index=False, encoding="utf-8")
-
-    # delete Emojis
-    msg_table['Message'] = [emoji.demojize(m) for m in msg_table["Message"]]
-    msg_table['Message'] = [re.sub(':*.*:', '', msg) for msg in msg_table['Message']]
-    msg_table = msg_table[[msg != '' for msg in msg_table['Message']]]
-
-    msgs = []
-    for msg in tqdm(msg_table['Message']):
-        preprocessed_msg = standardize_str(msg)
-        if len(preprocessed_msg) > 0:
-            msgs.append(preprocessed_msg)
-    with open(DATA_OUT_PATH, 'w') as f:
-        for msg in msgs:
-            f.write("%s\n" % msg)
