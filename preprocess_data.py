@@ -142,6 +142,8 @@ if __name__ == "__main__":
                 f.write("%s\n" % msg)
 
     msg_table["Message"] = msgs
+    msg_table = msg_table[msg_table["Message"] != ""]
+    msg_table.reset_index(inplace=True)
 
     msg_table["nWords"] = [len(m.split()) for m in msg_table["Message"]]
     msg_table["nLetters"] = [len(m) for m in msg_table["Message"]]
