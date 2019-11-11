@@ -4,7 +4,7 @@ from cdlib import algorithms
 from nxviz.plots import CircosPlot
 
 from metadata_analysis.utils import build_graph
-from preprocess_data import MSG_TABLE_OUT_PATH
+from preprocessing.preprocess_data import MSG_TABLE_OUT_PATH
 
 data = pd.read_csv(MSG_TABLE_OUT_PATH, encoding="utf-8")
 

@@ -1,7 +1,7 @@
 import pandas as pd
 
 from metadata_analysis.utils import plot_msg_overview, split_datetime
-from preprocess_data import MSG_TABLE_OUT_PATH
+from preprocessing.preprocess_data import MSG_TABLE_OUT_PATH
 
 data = pd.read_csv(MSG_TABLE_OUT_PATH, encoding="utf-8")
 data = split_datetime(data)

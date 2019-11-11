@@ -197,6 +197,7 @@ fabric.properties
 
 # Data
 data
+!/data/correction_map_template.json
 
 # Presentation and plots
 Friendship 4.0.odp

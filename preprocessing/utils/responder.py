@@ -1,7 +1,5 @@
 import numpy as np
 
-from preprocess_data import msg_table
-
 
 def get_responder(senders: list):
     """Extracts the first responder out of a list of senders.
@@ -46,7 +44,7 @@ def get_questioner(senders: list):
         list of questioners
     """
     response_to = np.repeat(None, len(senders))
-    idx = len(msg_table) - 1
+    idx = len(senders) - 1
     possible_questioners = {}
     unique_senders = list(set(senders))
     while senders:
