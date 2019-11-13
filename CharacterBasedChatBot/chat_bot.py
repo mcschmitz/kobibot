@@ -5,7 +5,7 @@ from keras.optimizers import Adam
 from CharacterBasedChatBot.DataLoader import CharacterEmbedder
 from CharacterBasedChatBot.network_definition import character_based_lstm
 from CharacterBasedChatBot.plot_loss import PlotLearning
-from preprocess_data import DATA_OUT_PATH as DATA_INPUT_PATH
+from preprocessing.preprocess_data import DATA_OUT_PATH as DATA_INPUT_PATH
 
 # PARAMETERS
 MIN_SEQ_LEN = 1

@@ -3,7 +3,7 @@ import operator
 import os
 
 import pandas as pd
-from keras.preprocessing.text import Tokenizer
+from keras.preprocessing.text import Tokenizer, text_to_word_sequence
 
 from preprocessing.preprocess_data import CORRECTION_MAP_DIR
 from preprocessing.preprocess_data import MSG_TABLE_OUT_PATH
@@ -22,9 +22,12 @@ if __name__ == "__main__":
         map = {"smileys": {},
                "words": {}}
 
+    standardized_msgs = [tokenizer.split.join(text_to_word_sequence(msg, filters=tokenizer.filters, lower=False)) for
+                         msg in data["Message"]]
+
     for idx, (word, freq) in enumerate(ordered):
         if word not in map["words"]:
-            examples = [msg for msg in data["Message"] if word in msg][:3]
+            examples = [msg for msg in standardized_msgs if word in msg.split(" ")][:3]
             print("({}/{}) - {} has a frequency of {}.\n".format(idx, len(ordered), word, freq),
                   "Examples are: {}\n".format(", ".join(examples)),
                   "If you want to replace is enter a string. Else press Enter.")
