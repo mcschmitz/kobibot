@@ -16,9 +16,12 @@ def standardize_message(s: str):
     Returns:
         The standardized string
     """
+    s = re.sub('https?://[^\s]+', "", s)
+    s = re.sub(r"\.+", " . ", s)
+    s = re.sub(r"\?+", " ? ", s)
+    s = re.sub(r"\!+", " ! ", s)
     s = "".join([s_i for s_i in s if unicodedata.category(s_i) != "Co"])
     s = s.strip()
-    s = re.sub('https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+', "", s)
     s = re.sub("\x00", "", s)
     if len(s) > 0:
         s = "".join([s_i for s_i in s if "MODIFIER FITZPATRICK" not in unicodedata.name(s_i)])

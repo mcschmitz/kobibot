@@ -10,7 +10,7 @@ from preprocessing.preprocess_data import MSG_TABLE_OUT_PATH
 
 if __name__ == "__main__":
     data = pd.read_csv(MSG_TABLE_OUT_PATH, encoding="utf-8")
-    tokenizer = Tokenizer(lower=False, filters='!"#$%&()*+,-./;<=>?@[\\]^`{|}~\t\n')
+    tokenizer = Tokenizer(lower=False, filters='"#$%&()*+,-/;<=>@[\\]^`{|}~\t\n')
     tokenizer.fit_on_texts(data["Message"])
 
     ordered = sorted(tokenizer.word_counts.items(), key=operator.itemgetter(1))
